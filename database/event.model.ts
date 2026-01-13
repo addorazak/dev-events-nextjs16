@@ -138,9 +138,10 @@ function generateSlug(title: string): string {
     .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
 }
 
-// Helper function to normalize date to ISO format
+/// Helper function to normalize date to ISO format
 function normalizeDate(dateString: string): string {
-  const date = new Date(dateString);
+  // Parse as UTC to avoid timezone shifts
+  const date = new Date(dateString + "T00:00:00Z");
   if (isNaN(date.getTime())) {
     throw new Error("Invalid date format");
   }

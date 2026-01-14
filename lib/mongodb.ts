@@ -8,12 +8,17 @@ type MongooseCache = {
 
 // Extend the global object to include our mongoose cache
 declare global {
+<<<<<<< Updated upstream
   var mongooseCache: MongooseCache | undefined;
+=======
+  var mongoose: MongooseCache | undefined;
+>>>>>>> Stashed changes
 }
 
 const MONGODB_URI = process.env.MONGODB_URI;
 
 // Initialize the cache on the global object to persist across hot reloads in development
+<<<<<<< Updated upstream
 const cached: MongooseCache = global.mongooseCache || {
   conn: null,
   promise: null,
@@ -21,6 +26,12 @@ const cached: MongooseCache = global.mongooseCache || {
 
 if (!global.mongooseCache) {
   global.mongooseCache = cached;
+=======
+const cached: MongooseCache = global.mongoose || { conn: null, promise: null };
+
+if (!global.mongoose) {
+  global.mongoose = cached;
+>>>>>>> Stashed changes
 }
 
 /**
@@ -66,4 +77,8 @@ async function connectDB(): Promise<typeof mongoose> {
   return cached.conn;
 }
 
+<<<<<<< Updated upstream
 export default connectDB;
+=======
+export default connectDB;
+>>>>>>> Stashed changes

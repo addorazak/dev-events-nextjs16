@@ -106,7 +106,11 @@ const EventSchema = new Schema<IEvent>(
   },
   {
     timestamps: true, // Auto-generate createdAt and updatedAt
+<<<<<<< Updated upstream
   }
+=======
+  },
+>>>>>>> Stashed changes
 );
 
 // Pre-save hook for slug generation and data normalization
@@ -115,6 +119,9 @@ EventSchema.pre<IEvent>("save", async function () {
   if (this.isModified("title") || this.isNew) {
     this.slug = generateSlug(this.title);
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
+=======
+>>>>>>> Stashed changes
   }
 
   // Normalize date to ISO format if it's not already
@@ -125,9 +132,25 @@ EventSchema.pre<IEvent>("save", async function () {
   // Normalize time format (HH:MM)
   if (this.isModified("time")) {
     this.time = normalizeTime(this.time);
+<<<<<<< Updated upstream
 =======
+=======
+>>>>>>> Stashed changes
   }
+});
 
+// Helper function to generate URL-friendly slug
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-") // Replace multiple hyphens with single hyphen
+    .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
+}
+
+<<<<<<< Updated upstream
   // Normalize date to ISO format if it's not already
   if (this.isModified("date")) {
     this.date = normalizeDate(this.date);
@@ -153,9 +176,56 @@ function generateSlug(title: string): string {
   if (this.isModified("time")) {
     this.time = normalizeTime(this.time);
 >>>>>>> Stashed changes
+=======
+// Helper function to normalize date to ISO format
+function normalizeDate(dateString: string): string {
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid date format");
+>>>>>>> Stashed changes
   }
-});
+  return date.toISOString().split("T")[0]; // Return YYYY-MM-DD format
+}
 
+// Helper function to normalize time format
+function normalizeTime(timeString: string): string {
+  // Handle various time formats and convert to HH:MM (24-hour format)
+  const timeRegex = /^(\d{1,2}):(\d{2})(\s*(AM|PM))?$/i;
+  const match = timeString.trim().match(timeRegex);
+
+  if (!match) {
+    throw new Error("Invalid time format. Use HH:MM or HH:MM AM/PM");
+  }
+
+  let hours = parseInt(match[1]);
+  const minutes = match[2];
+  const period = match[4]?.toUpperCase();
+
+  if (period) {
+    // Convert 12-hour to 24-hour format
+    if (period === "PM" && hours !== 12) hours += 12;
+    if (period === "AM" && hours === 12) hours = 0;
+  }
+
+  if (
+    hours < 0 ||
+    hours > 23 ||
+    parseInt(minutes) < 0 ||
+    parseInt(minutes) > 59
+  ) {
+    throw new Error("Invalid time values");
+  }
+
+  return `${hours.toString().padStart(2, "0")}:${minutes}`;
+}
+
+// Create unique index on slug for better performance
+EventSchema.index({ slug: 1 }, { unique: true });
+
+// Create compound index for common queries
+EventSchema.index({ date: 1, mode: 1 });
+
+<<<<<<< Updated upstream
 <<<<<<< Updated upstream
   return slug;
 }
@@ -224,6 +294,8 @@ EventSchema.index({ slug: 1 }, { unique: true });
 // Create compound index for common queries
 EventSchema.index({ date: 1, mode: 1 });
 
+=======
+>>>>>>> Stashed changes
 const Event = models.Event || model<IEvent>("Event", EventSchema);
 
 export default Event;

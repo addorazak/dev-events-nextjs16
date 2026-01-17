@@ -34,7 +34,11 @@ const BookingSchema = new Schema<IBooking>(
   },
   {
     timestamps: true, // Auto-generate createdAt and updatedAt
+<<<<<<< Updated upstream
   }
+=======
+  },
+>>>>>>> Stashed changes
 );
 
 // Pre-save hook to validate events exists before creating booking
@@ -51,7 +55,11 @@ BookingSchema.pre<IBooking>("save", async function () {
       }
     } catch {
       const validationError = new Error(
+<<<<<<< Updated upstream
         "Invalid events ID format or database error"
+=======
+        "Invalid events ID format or database error",
+>>>>>>> Stashed changes
       );
       validationError.name = "ValidationError";
       throw validationError;
@@ -71,7 +79,11 @@ BookingSchema.index({ email: 1 });
 // Enforce one booking per events per email
 BookingSchema.index(
   { eventId: 1, email: 1 },
+<<<<<<< Updated upstream
   { unique: true, name: "uniq_event_email" }
+=======
+  { unique: true, name: "uniq_event_email" },
+>>>>>>> Stashed changes
 );
 const Booking = models.Booking || model<IBooking>("Booking", BookingSchema);
 

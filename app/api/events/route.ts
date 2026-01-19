@@ -32,8 +32,17 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const tags = JSON.parse(formData.get("tags") as string);
-    const agenda = JSON.parse(formData.get("agenda") as string);
+    let tags;
+    let agenda;
+    try {
+      tags = JSON.parse(formData.get("tags") as string);
+      agenda = JSON.parse(formData.get("agenda") as string);
+    } catch {
+      return NextResponse.json(
+        { message: "Invalid tags/agenda JSON" },
+        { status: 400 },
+      );
+    }
 
     // Ensure it's a valid File object with arrayBuffer method
     if (typeof file.arrayBuffer !== "function") {

@@ -23,6 +23,15 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    const MAX_IMAGE_BYTES = 5 * 1024 * 1024; // 5MB
+    const ALLOWED_TYPES = new Set(["image/jpeg", "image/png", "image/webp"]);
+    if (!ALLOWED_TYPES.has(file.type) || file.size > MAX_IMAGE_BYTES) {
+      return NextResponse.json(
+        { message: "Invalid image type or size exceeds limit" },
+        { status: 400 },
+      );
+    }
+
     const tags = JSON.parse(formData.get("tags") as string);
     const agenda = JSON.parse(formData.get("agenda") as string);
 
@@ -36,7 +45,6 @@ export async function POST(req: NextRequest) {
 
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
-
     const uploadResult = await new Promise((resolve, reject) => {
       cloudinary.uploader
         .upload_stream(

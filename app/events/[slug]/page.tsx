@@ -1,7 +1,6 @@
 import EventDetails from "@/components/EventDetails";
 import { Suspense } from "react";
 
-
 const EventDetailsPage = async ({
   params,
 }: {
@@ -11,8 +10,8 @@ const EventDetailsPage = async ({
 
   return (
     <main>
-      <Suspense fallback={<div>Loading event details...</div>}>
-        <EventDetails params={slug} />
+      <Suspense fallback={<div>Loading...</div>}>
+        <EventDetails slug={slug} />
       </Suspense>
     </main>
   );

@@ -1,10 +1,12 @@
 import Image from "next/image";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import BookEvent from "./BookEvent";
 import EventCard from "./EventCard";
 import { IEvent } from "@/database";
 import { getSimilarEventsBySlug } from "@/lib/actions/event.actions";
-import { Suspense } from "react";
+
+const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const EventDetailItem = ({
   icon,
@@ -38,7 +40,7 @@ const EventAgenda = ({ agendaItems }: { agendaItems: string[] }) => {
 
 const EventTags = ({ tags }: { tags: string[] }) => {
   return (
-    <div className="flex flex-row gap-2 flex-wrap ">
+    <div className="flex flex-row gap-2 flex-wrap">
       {tags.map((tag) => (
         <div className="pill" key={tag}>
           {tag}
@@ -68,7 +70,6 @@ const SimilarEventsSection = async ({ slug }: { slug: string }) => {
 };
 
 const EventDetails = async ({ slug }: { slug: string }) => {
-  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
   if (!BASE_URL) {
     throw new Error("NEXT_PUBLIC_BASE_URL is not set");
   }
@@ -123,7 +124,6 @@ const EventDetails = async ({ slug }: { slug: string }) => {
       </div>
 
       <div className="details">
-        {/* Left side - Event content */}
         <div className="content">
           <Image src={image} alt="Event Banner" width={800} height={800} />
 
@@ -161,7 +161,7 @@ const EventDetails = async ({ slug }: { slug: string }) => {
 
           <EventTags tags={tags} />
         </div>
-        {/* Right side - Booking Form */}
+
         <aside className="booking">
           <div className="signup-card">
             <h2>Book Your Spot</h2>

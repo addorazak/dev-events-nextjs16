@@ -1,8 +1,6 @@
 import EventDetails from "@/components/EventDetails";
 import { Suspense } from "react";
 
-export const dynamicParams = false;
-
 const EventDetailsPage = async ({
   params,
 }: {

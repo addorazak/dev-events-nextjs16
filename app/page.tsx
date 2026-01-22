@@ -1,15 +1,28 @@
 import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
 import { IEvent } from "@/database";
-import { cacheLife } from "next/cache";
-// import { events } from "@/lib/constants";
+import { events as dummyEvents } from "@/lib/constants";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+
 const Page = async () => {
-  "use cache";
-  cacheLife("hours");
-  const response = await fetch(`${BASE_URL}/api/events`);
-  const { events } = await response.json();
+  let events: IEvent[] = dummyEvents as IEvent[];
+
+  try {
+    if (BASE_URL) {
+      const response = await fetch(`${BASE_URL}/api/events`, {
+        next: { revalidate: 3600 },
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        events = data.events;
+      }
+    }
+  } catch (error) {
+    console.warn("Failed to fetch from MongoDB, using dummy data:", error);
+  }
+
   return (
     <section>
       <h1 className="text-center">
@@ -39,4 +52,5 @@ const Page = async () => {
     </section>
   );
 };
+
 export default Page;

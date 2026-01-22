@@ -2,10 +2,11 @@ import ExploreBtn from "@/components/ExploreBtn";
 import EventCard from "@/components/EventCard";
 import { IEvent } from "@/database";
 import { events as dummyEvents } from "@/lib/constants";
+import { Suspense } from "react";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
-const Page = async () => {
+const EventsList = async () => {
   let events: IEvent[] = dummyEvents as IEvent[];
 
   try {
@@ -24,6 +25,26 @@ const Page = async () => {
   }
 
   return (
+    <div className="mt-7 space-y-7">
+      <h3>Featured Events</h3>
+
+      <ul className="events list-none">
+        {events?.length ? (
+          events.map((event: IEvent) => (
+            <li key={event.slug}>
+              <EventCard {...event} />
+            </li>
+          ))
+        ) : (
+          <li>No events</li>
+        )}
+      </ul>
+    </div>
+  );
+};
+
+const Page = () => {
+  return (
     <section>
       <h1 className="text-center">
         The Hub for Every Dev <br /> Event You Can&apos;t Miss
@@ -34,21 +55,9 @@ const Page = async () => {
 
       <ExploreBtn />
 
-      <div className="mt-7 space-y-7">
-        <h3>Featured Events</h3>
-
-        <ul className="events list-none">
-          {events?.length ? (
-            events.map((event: IEvent) => (
-              <li key={event.slug}>
-                <EventCard {...event} />
-              </li>
-            ))
-          ) : (
-            <li>No events</li>
-          )}
-        </ul>
-      </div>
+      <Suspense fallback={<div>Loading events...</div>}>
+        <EventsList />
+      </Suspense>
     </section>
   );
 };

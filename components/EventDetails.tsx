@@ -4,6 +4,7 @@ import BookEvent from "./BookEvent";
 import EventCard from "./EventCard";
 import { IEvent } from "@/database";
 import { getSimilarEventsBySlug } from "@/lib/actions/event.actions";
+import { Suspense } from "react";
 
 const EventDetailItem = ({
   icon,
@@ -43,6 +44,25 @@ const EventTags = ({ tags }: { tags: string[] }) => {
           {tag}
         </div>
       ))}
+    </div>
+  );
+};
+
+const SimilarEventsSection = async ({ slug }: { slug: string }) => {
+  const similarEvents: IEvent[] = await getSimilarEventsBySlug(slug);
+
+  return (
+    <div className="w-full flex-col gap-4 pt-20">
+      <h2 className="pb-5">Similar Events</h2>
+      <div className="events">
+        {similarEvents && similarEvents.length > 0 ? (
+          similarEvents.map((similarEvent: IEvent) => (
+            <EventCard key={similarEvent.title} {...similarEvent} />
+          ))
+        ) : (
+          <p>No similar events found.</p>
+        )}
+      </div>
     </div>
   );
 };
@@ -94,8 +114,6 @@ const EventDetails = async ({ slug }: { slug: string }) => {
   if (!description) return notFound();
 
   const bookings = 10;
-
-  const similarEvents: IEvent[] = await getSimilarEventsBySlug(slug);
 
   return (
     <section id="event">
@@ -160,18 +178,9 @@ const EventDetails = async ({ slug }: { slug: string }) => {
         </aside>
       </div>
 
-      <div className="w-full flex-col gap-4 pt-20">
-        <h2 className="pb-5">Similar Events</h2>
-        <div className="events">
-          {similarEvents && similarEvents.length > 0 ? (
-            similarEvents.map((similarEvent: IEvent) => (
-              <EventCard key={similarEvent.title} {...similarEvent} />
-            ))
-          ) : (
-            <p>No similar events found.</p>
-          )}
-        </div>
-      </div>
+      <Suspense fallback={<div>Loading similar events...</div>}>
+        <SimilarEventsSection slug={slug} />
+      </Suspense>
     </section>
   );
 };

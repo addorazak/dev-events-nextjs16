@@ -4,12 +4,6 @@ import BookEvent from "./BookEvent";
 import EventCard from "./EventCard";
 import { IEvent } from "@/database";
 import { getSimilarEventsBySlug } from "@/lib/actions/event.actions";
-import { cacheLife } from "next/cache";
-
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
-if (!BASE_URL) {
-  throw new Error("NEXT_PUBLIC_BASE_URL is not set");
-}
 
 const EventDetailItem = ({
   icon,
@@ -54,12 +48,15 @@ const EventTags = ({ tags }: { tags: string[] }) => {
 };
 
 const EventDetails = async ({ slug }: { slug: string }) => {
-  "use cache";
-  cacheLife("hours");
+  const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+  if (!BASE_URL) {
+    throw new Error("NEXT_PUBLIC_BASE_URL is not set");
+  }
+
   let event;
   try {
     const request = await fetch(`${BASE_URL}/api/events/${slug}`, {
-      next: { revalidate: 60 },
+      next: { revalidate: 3600 },
     });
 
     if (!request.ok) {

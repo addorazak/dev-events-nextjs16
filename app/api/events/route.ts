@@ -114,7 +114,7 @@ export async function GET() {
     return NextResponse.json(
       {
         message: "Event fetching failed",
-        error: e,
+        error: e instanceof Error ? e.message : "Unknown error",
       },
       { status: 500 },
     );
